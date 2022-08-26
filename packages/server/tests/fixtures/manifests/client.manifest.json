@@ -1,0 +1,31 @@
+{
+  "initial": [
+    "runtime.1064ddbdc9cd0bd42097.js",
+    "commons.app.11c169387f9f72b6695d.js",
+    "composer-components.8618b49f8c75910f1885.css",
+    "composer-components.2f22294bb07ff5b9648e.js",
+    "vendor-lodash.c678bddc41fcd858048f.js",
+    "helpers.b57ac540f28cfefb7c90.js",
+    "services.a84be36eab0c58c9acfd.js",
+    "plugins.9d20b2ee4d21a8c05590.js",
+    "analytics.b64391704879d49bf440.js",
+    "vendor-swiper.ac11bc82d7ebce98c02c.css",
+    "vendor-swiper.860d2df4baa265ba7c4d.js",
+    "vendor.e10ebb4935dc767a381b.css",
+    "vendor.7132bea6fe81953e03d5.js",
+    "app.85b5ac7b77227683bc2f.css",
+    "app.2aeecc050edda5800f58.js"
+  ],
+  "widgets": {
+    "CmsAlertPopup": {
+      "content": {
+        "assets": [
+          "composer-components.1c30c87026ba7662a722.css",
+          "composer-components.09cbfb499b9523d96f81.js",
+          "cms-all-alert-popup.e8cc71888c9f0df6fc12.css",
+          "cms-all-alert-popup.25eb9557be85d3976541.js"
+        ]
+      }
+    }
+  }
+}

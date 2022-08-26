@@ -1,0 +1,69 @@
+stages:
+  - .pre
+  - test
+  - .post
+
+cache: &global-cache
+  key:
+    files:
+      - yarn.lock
+  paths:
+    - node_modules
+  policy: pull
+
+install-dependencies:
+  image: ${DOCKER_IMAGE_WITH_CACHE}
+  stage: .pre
+  tags:
+    - no-internet
+  cache:
+    <<: *global-cache
+    policy: pull-push
+  script:
+    - yarn ci-build-from-source
+  except:
+    - tags
+
+.test: &test
+  image: gitlab-registry.ozon.ru/docker/nodejs-wdio:latest
+  stage: test
+  tags:
+    - moon
+    - 5m
+  needs:
+    - install-dependencies
+  script:
+    - yarn env:stage yarn e2e:test
+  artifacts:
+    when: always
+    paths:
+      - dist/wdio/screenshots.zip
+      - dist/wdio/reports.zip
+  only:
+    - /^release\/.+$/
+
+push-compare-app:
+  stage: .post
+  image: ${BUILDER_IMAGE}
+  when: on_failure
+  allow_failure: true
+  dependencies:
+    - install-dependencies
+  script:
+    - npx e2e-runner screenshots compare-app
+  only:
+    - /^release\/.+$/
+
+push-screenshots:
+  stage: .post
+  image: ${BUILDER_IMAGE}
+  when: on_failure
+  allow_failure: true
+  dependencies:
+    - install-dependencies
+  script:
+    - npx e2e-runner screenshots push
+  only:
+    - /^release\/.+$/
+
+# Screenshot jobs will be generated automatically by running e2e:generate-child-pipeline-config

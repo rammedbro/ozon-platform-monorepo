@@ -1,0 +1,24 @@
+{
+  "version": "1.1.1-dev-bxfe-3278.6",
+  "npmClient": "yarn",
+  "useWorkspaces": true,
+  "command": {
+    "publish": {
+      "registry": "https://nexus.s.o3.ru/repository/npm-private",
+      "message": "chore(release) Publish %v"
+    },
+    "version": {
+      "allowBranch": [
+        "release/**"
+      ]
+    }
+  },
+  "packages": [
+    "packages/*"
+  ],
+  "ignoreChanges": [
+    "packages/*/tests/*",
+    "packages/*/types/*",
+    "*.md"
+  ]
+}

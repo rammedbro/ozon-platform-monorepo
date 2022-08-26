@@ -1,0 +1,18 @@
+{
+  "name": "@bx-fe/platform-config",
+  "version": "1.1.1-dev-bxfe-3278.6",
+  "description": "Config for platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "author": "rsharipov",
+  "license": "MIT",
+  "dependencies": {
+    "@bx-fe/config": "2.3.6"
+  }
+}

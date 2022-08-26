@@ -1,0 +1,203 @@
+image: gitlab-registry.ozon.ru/bx-fe/docker-images/nodejs-14-15-5-ubuntu/master:latest
+
+stages:
+  - .pre
+  - build
+  #  - review
+  #  - tests
+  - release
+  - publish
+  - .post
+
+cache: &global-cache
+  key:
+    files:
+      - yarn.lock
+      - packages/**/yarn.lock
+  paths:
+    - node_modules
+    - packages/**/node_modules
+  policy: pull
+
+install-dependencies:
+  stage: .pre
+  tags:
+    - no-internet
+  cache:
+    <<: *global-cache
+    policy: pull-push
+  script:
+    - yarn ci:build-from-source
+    - yarn lerna:bootstrap
+  except:
+    refs:
+      - master
+    variables:
+      - $CI_SKIP == "true"
+
+build:
+  stage: build
+  needs:
+    - install-dependencies
+  artifacts:
+    paths:
+      - packages/**/dist
+  script:
+    - yarn build
+  except:
+    refs:
+      - master
+    variables:
+      - $CI_SKIP == "true"
+
+#review:lint:
+#  stage: review
+#  needs:
+#    - build
+#  script:
+#    - yarn lint
+#  except:
+#    - master
+#    - tags
+#
+#review:types:
+#  stage: review
+#  needs:
+#    - build
+#  script:
+#    - yarn types
+#  except:
+#    - master
+#    - tags
+
+#unit:
+#  stage: tests
+#  needs:
+#    - build
+#  artifacts:
+#    when: always
+#    reports:
+#      junit:
+#        - dist/unit/report/junit.xml
+#  script:
+#    - yarn test:coverage
+#  except:
+#    - master
+#    - tags
+
+.bot-auth:
+  variables:
+    RELEASE_BOT_NAME: "release_bot"
+    RELEASE_BOT_ID: "project_${CI_PROJECT_ID}_bot"
+  before_script:
+    - git config --global user.name "${RELEASE_BOT_NAME}"
+    - git config --global user.email "${RELEASE_BOT_ID}@ozon.ru"
+    - git remote set-url origin "https://gitlab-ci-token:${GITLAB_FULL_ACCESS_TOKEN}@gitlab.ozon.ru/${CI_PROJECT_PATH}"
+
+close-release:
+  extends:
+    - .bot-auth
+  stage: release
+  when: manual
+  dependencies:
+    - install-dependencies
+  script:
+    - git fetch origin master
+    - git checkout $CI_COMMIT_REF_NAME
+    - yarn lerna:version $VERSION --yes --exact --no-push --conventional-commits --conventional-graduate
+    - git checkout master
+    - git merge -q --no-ff --no-verify $CI_COMMIT_REF_NAME -m "Merge ${CI_COMMIT_REF_NAME} to origin/master"
+    - git push -u origin master --tags --no-verify
+    - curl --request DELETE --header "PRIVATE-TOKEN:${GITLAB_FULL_ACCESS_TOKEN}" "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/repository/branches/${CI_COMMIT_REF_SLUG}"
+  only:
+    - /^release\/.+$/
+
+.release:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - echo "Registering release for $CI_COMMIT_TAG"
+  release:
+    name: "Release $CI_COMMIT_TAG"
+    description: "$CI_COMMIT_MESSAGE"
+    tag_name: "$CI_COMMIT_TAG"
+    ref: "$CI_COMMIT_TAG"
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_SKIP != "true"
+
+release:major:
+  extends: .release
+  variables:
+    VERSION: major
+
+release:minor:
+  extends: .release
+  variables:
+    VERSION: minor
+
+release:patch:
+  extends: .release
+  variables:
+    VERSION: patch
+
+.publish:
+  stage: publish
+  dependencies:
+    - install-dependencies
+    - build
+  script:
+    - yarn lerna:publish
+
+publish:release:
+  extends:
+    - .publish
+  when: on_success
+  only:
+    refs:
+      - tags
+    variables:
+      - $CI_SKIP != "true"
+
+publish:prerelease:
+  extends:
+    - .bot-auth
+    - .publish
+  when: manual
+  variables:
+    GITLAB_PACKAGE_REGISTRY: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm"
+  before_script:
+    - !reference [ .bot-auth, before_script ]
+    - git checkout $CI_COMMIT_REF_NAME
+    - export VERSION=$(node -p "require('./lerna.json').version")
+    - export SEM_VERSION=$(npx semver $VERSION -i prerelease --preid $CI_COMMIT_REF_SLUG)
+    - yarn lerna:version $SEM_VERSION --yes --exact --no-push --conventional-prerelease --conventional-commits --allow-branch $CI_COMMIT_REF_NAME
+    - git push origin $CI_COMMIT_REF_NAME -q --tags --no-verify -o ci.variable="CI_SKIP=true"
+  script:
+    - echo "registry=${GITLAB_PACKAGE_REGISTRY}" > .npmrc
+    - echo "${GITLAB_PACKAGE_REGISTRY/https:/}/:_authToken=${GITLAB_FULL_ACCESS_TOKEN}" >> .npmrc
+    - yarn lerna:publish --registry $GITLAB_PACKAGE_REGISTRY
+  only:
+    refs:
+      - /^dev\/.+$/
+    variables:
+      - $CI_SKIP != "true"
+
+unpublish:prerelease:
+  stage: publish
+  when: manual
+  needs:
+    - install-dependencies
+  before_script:
+    - export BX_FE_REGISTRY=$(node -p "require('./lerna.json').command.publish.registry")
+    - echo "registry=${BX_FE_REGISTRY}" > .npmrc
+    - echo "${BX_FE_REGISTRY/https:/}/:_authToken=${NPM_AUTH_TOKEN}" >> .npmrc
+  script:
+    - node scripts/unpublish.js
+  only:
+    refs:
+      - /^dev\/.+$/
+    variables:
+      - $CI_SKIP != "true"

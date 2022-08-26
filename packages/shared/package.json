@@ -1,0 +1,29 @@
+{
+  "name": "@bx-fe/platform-shared",
+  "version": "1.1.1-dev-bxfe-3278.6",
+  "description": "Shared code for platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "author": "rsharipov",
+  "license": "MIT",
+  "dependencies": {
+    "@bx-fe/logger": "1.1.8",
+    "@bx-fe/platform-config": "1.1.1-dev-bxfe-3278.6",
+    "@bx-fe/platform-types": "1.1.1-dev-bxfe-3278.6",
+    "consola": "2.14.0",
+    "fast-glob": "3.2.11",
+    "jaeger-client": "3.18.0",
+    "memcache-plus": "0.2.22",
+    "minio": "7.0.18"
+  },
+  "devDependencies": {
+    "@types/jaeger-client": "3.18.3",
+    "@types/minio": "7.0.12"
+  }
+}

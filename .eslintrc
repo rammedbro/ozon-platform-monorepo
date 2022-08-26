@@ -1,0 +1,133 @@
+{
+  "plugins": [
+    "@bx-fe/ts",
+    "@bx-fe/vue"
+  ],
+  "extends": [
+    "plugin:@bx-fe/vue/typescript"
+  ],
+  "parserOptions": {
+    "project": [
+      "./tsconfig.json",
+      "./packages/*/tsconfig.json"
+    ]
+  },
+  "settings": {
+    "import/resolver": {
+      "alias": {
+        "map": [
+          [
+            "~",
+            "./"
+          ]
+        ]
+      },
+      "typescript": {
+        "alwaysTryTypes": true,
+        "project": "packages/*/tsconfig.json"
+      }
+    }
+  },
+  "rules": {
+    /** Eslint **/
+    "no-nested-ternary": "off",
+    "no-shadow": "off",
+    "multiline-ternary": "off",
+    "indent": [
+      "error",
+      2,
+      {
+        "SwitchCase": 1,
+        "flatTernaryExpressions": true
+      }
+    ],
+    "consistent-return": "warn",
+    "camelcase": "warn",
+    "no-invalid-this": "warn",
+    /** Import **/
+    "import/no-extraneous-dependencies": [
+      "error",
+      {
+        "packageDir": [
+          "./",
+          "./packages/build",
+          "./packages/cli",
+          "./packages/config",
+          "./packages/i18n",
+          "./packages/server",
+          "./packages/server-debug",
+          "./packages/shared",
+          "./packages/types",
+          "./packages/app"
+        ]
+      }
+    ],
+    /** Security **/
+    "security/detect-non-literal-regexp": "off",
+    "security/detect-unsafe-regex": "off",
+    /** Node **/
+    "node/no-callback-literal": "warn",
+    "node/no-unsupported-features/es-syntax": [
+      "error",
+      {
+        "ignores": [
+          "modules",
+          "dynamicImport"
+        ]
+      }
+    ],
+    /** Promise **/
+    "promise/catch-or-return": [
+      "warn",
+      {
+        "allowFinally": true
+      }
+    ],
+    /** @bx-fe/ts */
+    "@bx-fe/ts/forbid-underscore": "warn"
+  },
+  "overrides": [
+    {
+      "files": [
+        "*.ts",
+        "*.tsx",
+        "*.vue"
+      ],
+      "rules": {
+        /** TS **/
+        "@typescript-eslint/prefer-regexp-exec": "off",
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/strict-boolean-expressions": "off",
+        "@typescript-eslint/no-shadow": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/ban-ts-comment": "warn",
+        "@typescript-eslint/ban-types": "warn",
+        "@typescript-eslint/no-empty-function": "warn",
+        "@typescript-eslint/no-this-alias": "warn",
+        "@typescript-eslint/no-invalid-this": "warn",
+        "@typescript-eslint/consistent-type-imports": "warn"
+      }
+    },
+    {
+      "files": [
+        "*.test.ts",
+        "**/__mocks__/**"
+      ],
+      "rules": {
+        /** Jest **/
+        "jest/no-mocks-import": "warn",
+        "jest/no-done-callback": "warn",
+        "jest/require-to-throw-message": "warn",
+        "jest/prefer-spy-on": "warn",
+        /** TS **/
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/unbound-method": "off",
+        "@typescript-eslint/require-await": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-unsafe-return": "off"
+      }
+    }
+  ]
+}

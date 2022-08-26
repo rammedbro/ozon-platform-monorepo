@@ -1,0 +1,61 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "module": "esnext",
+    "jsx": "react",
+    "paths": {
+      "~/*": [
+        "./*"
+      ],
+      "@app/*": [
+        "./src/application/*"
+      ],
+      "@teams/*": [
+        "./src/teams/*"
+      ],
+      "@layouts/*": [
+        "./src/layouts/*"
+      ],
+      "@store/*": [
+        "./src/store/*"
+      ],
+      "@services/*": [
+        "./src/services/*"
+      ],
+      "@tests/*": [
+        "./src/tests/*"
+      ],
+
+      "@ui-kit": [
+        "../../node_modules/@bx-fe/ui-kit/dist/lib"
+      ],
+      "@ui-kit/*": [
+        "../../node_modules/@bx-fe/ui-kit/dist/lib/*"
+      ],
+
+      "~common/*": [
+        "./src/teams/common/*"
+      ],
+      "@common/*": [
+        "./src/teams/common/components/*"
+      ],
+      "~composer/*": [
+        "./src/teams/composer/*"
+      ],
+      "@composer/*": [
+        "./src/teams/composer/components/*"
+      ],
+      "~layout/*": [
+        "./src/teams/layout/*"
+      ],
+      "@layout/*": [
+        "./src/teams/layout/components/*"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

@@ -1,0 +1,82 @@
+{
+  "widgets": {
+    "LayoutBlockHorizontal": {
+      "content": [
+        10
+      ]
+    },
+    "LayoutBlockVertical": {
+      "content": {
+        "desktop": [
+          15
+        ],
+        "mobile": []
+      }
+    },
+    "LayoutContainer": {
+      "content": {
+        "desktop": [
+          15
+        ],
+        "mobile": [
+          16
+        ]
+      }
+    },
+    "LayoutStickyContainer": {
+      "content": [
+        14
+      ]
+    },
+    "LayoutRow": {
+      "content": [
+        15
+      ]
+    },
+    "LayoutGrid": {
+      "content": [
+        13
+      ]
+    },
+    "LayoutError": {
+      "content": [
+        11
+      ]
+    },
+    "LayoutErrorPage": {
+      "content": [
+        12
+      ]
+    },
+    "LayoutColumn": {
+      "content": [
+        15
+      ]
+    },
+    "ClubArticle": {
+      "content": [
+        0,
+        2,
+        1,
+        5
+      ]
+    },
+    "ClubArticleList": {
+      "content": [
+        0,
+        6
+      ]
+    },
+    "ClubHeading": {
+      "content": [
+        8
+      ]
+    },
+    "ClubBreadcrumbs": {
+      "content": [
+        0,
+        7
+      ]
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "@bx-fe/platform-i18n",
+  "version": "1.1.1-dev-bxfe-3278.6",
+  "description": "Localization for platform",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=12.3.0"
+  },
+  "author": "rsharipov",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "7.14.6",
+    "@bx-fe/platform-shared": "1.1.1-dev-bxfe-3278.6",
+    "consola": "2.14.0",
+    "dayjs": "1.8.31",
+    "fast-glob": "3.2.11",
+    "form-data": "4.0.0",
+    "fs-extra": "9.0.1",
+    "node-fetch": "2.6.7"
+  }
+}
